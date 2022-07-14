@@ -12,34 +12,25 @@
  * Author URI: https://www.sio.lyceefulbert.fr
  */
  
- class PlanePlan 
-{
-    public function __construct()
-    {
-        // Your code here
-		add_action( 'admin_menu', [ $this, 'admin_planeplan_plugin_menu'] );
-    }
-	
-	public function admin_planeplan_plugin_menu(){
-		add_menu_page(
-			__('PlanePlan Plugin', 'planeplan'), // Page title
-			__('PlanePlan Plugin', 'planeplan '), // Menu title
-			'manage_options',  // Capability
-			'planeplan', // Slug
-			[ &$this, 'load_planeplan_plugin_page'] // Callback page function
-		);
-	}
-	
-	public function load_planeplan_plugin_page() 
-	{ 
-        echo '<h1>' . __( 'planeplan Plugin', 'planeplan' ) . '</h1>'; 
-        echo '<p>' . __( 'Welcome to planeplan Plugin', 'planeplan' ) . '</p>'; 
-		echo '<p>' . __( 'On dit Merci Qui ? .... merci Ludo !', 'planeplan' ) . '</p>'; 
-	}
+ /*
+ remarque:
+ 
+ WordPress ne gère pas les namespaces :-(  
+ 
+ la loose, une journée de perdue pour comprendre le bug
+ */
+ 
+ require_once("classes/planeplan_class.php");
+ require_once("classes/rotation_class.php");
+ require_once("classes/sauteur_class.php");
+   
+//use planeplan\planeplan;
+use planeplan;
+ 
+ register_activation_hook(   __FILE__, array( 'planeplan', 'on_activation' ) );
+//register_deactivation_hook( __FILE__, array( 'WCM_Setup_Demo_Class', 'on_deactivation' ) );
+//register_uninstall_hook(    __FILE__, array( 'WCM_Setup_Demo_Class', 'on_uninstall' ) );
 
-}
-
-
-new PlanePlan();
-
-                
+ 
+$plugin=new planeplan();
+$plugin->init();
