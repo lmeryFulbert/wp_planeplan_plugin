@@ -1,2 +1,7 @@
 # wp_planeplan_plugin
-Plug in for the management of flight planning for skydivers
+##Plugin for the management of flight planning for skydivers
+###Author: Ludovic MERY
+
+Install in wp-content\plugins
+
+go to Extension, search PlanePlan and Activate
