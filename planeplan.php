@@ -16,6 +16,7 @@ namespace planeplan;
     require_once("classes/class-planeplan.php");
     require_once("classes/class-rotation.php");
     require_once("classes/class-sauteur.php");
+    require_once("classes/class-param.php");
 
    // use \planeplan\planeplan;
 
