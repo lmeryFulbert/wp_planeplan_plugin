@@ -32,7 +32,7 @@ namespace planeplan;
         );
     }
 
-    add_action('activated_plugin', 'save_output_buffer_to_file');
+    add_action('activated_plugin', 'planeplan\save_output_buffer_to_file');
 
     $plugin = new planeplan();
     $plugin->init();

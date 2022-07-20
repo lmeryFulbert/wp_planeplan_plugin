@@ -38,7 +38,7 @@ namespace planeplan{
 
 			$rotation_table_name = $wpdb->prefix . self::$_prefix_plugin. 'rotation';
 			$rotation_table = rotation::createtable($rotation_table_name, $charset_collate);
-			
+
             $sauteur_table_name = $wpdb->prefix . self::$_prefix_plugin. 'sauteur';
             $sauteur_table = sauteur::createtable($sauteur_table_name, $charset_collate);
 
