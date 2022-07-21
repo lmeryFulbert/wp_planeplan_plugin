@@ -7,18 +7,28 @@
  * Author Name: MERY Ludovic (ludovic.mery@lyceefulbert.fr)  
  * Author: MERY Ludovic (Undefined)  
  * Domain Path: /fr  
- * Text Domain: linky 
+ * Text Domain: wppp
  * Author URI: https://www.sio.lyceefulbert.fr
  */
 namespace planeplan;
 
+/*
+ * Ne pas oublier de faire le require_once de chaque classe, pas d'autoloader volontairement pour comprendre comment cela fonctionne
+ */
+    // Loading table class
+    if (!class_exists('\WP_List_Table')) {
+        require_once(ABSPATH . 'wp-admin/includes/class-wp-list-table.php');
+    }
 
     require_once("classes/class-planeplan.php");
     require_once("classes/class-rotation.php");
     require_once("classes/class-sauteur.php");
+    require_once("classes/class-aerodrome.php");
     require_once("classes/class-param.php");
 
-   // use \planeplan\planeplan;
+
+
+    use \planeplan\planeplan;
 
     register_activation_hook(__FILE__, array('\planeplan\planeplan', 'on_activation'));
 
@@ -33,7 +43,7 @@ namespace planeplan;
         );
     }
 
-    add_action('activated_plugin', 'planeplan\save_output_buffer_to_file');
+    add_action('activated_plugin', '\planeplan\save_output_buffer_to_file');
 
     $plugin = new planeplan();
     $plugin->init();

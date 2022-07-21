@@ -1,5 +1,5 @@
 <?php
-namespace planeplan{
+namespace planeplan;
 
     use planeplan\param;
     use \planeplan\rotation ;
@@ -48,7 +48,7 @@ namespace planeplan{
             dbDelta($sauteur_table);
 
             $aerodrome_table_name = $wpdb->prefix . self::$_prefix_plugin. 'aerodrome';
-            $aerodrome_table = sauteur::createtable($aerodrome_table_name, $charset_collate);
+            $aerodrome_table = aerodrome::createtable($aerodrome_table_name, $charset_collate);
             dbDelta($aerodrome_table);
 
 		}
@@ -62,11 +62,11 @@ namespace planeplan{
 		     * Menu principal
 		     */
 			add_menu_page(
-				__('PlanePlan Plugin setting', 'planeplan/planplan'), // Page title
-				__('PlanePlan', 'planeplan/planplan '), // Menu title
+				__('planeplane Plugin settings', 'planeplan/planplan'), // Page title
+				__('planeplane', 'planeplan/planplan '), // Menu title
 				'manage_options',  // Capability
-				'planplan_settings_page', // Slug
-				[ &$this, 'load_planeplan_accueil'], // Callback page function
+				'planplan', // Slug
+				[ &$this, 'planeplan_accueil'], // Callback page function
 				'dashicons-calendar-alt'
 			);
 
@@ -74,12 +74,12 @@ namespace planeplan{
              * Sous Menu principal
             */
             add_submenu_page(
-                'planplan_settings_page', // slug du Menu Parent
-                __( 'PlanePlan Gestion des Rotations', 'planeplan/planplan' ), // Titre de la page identique au menu parent
+                'planplan', // slug du Menu Parent
+                __( 'planeplane Gestion des Rotations', 'planeplan/planplan' ), // Titre de la page identique au menu parent
                 __( 'Rotations', 'planeplan/planplan' ),          // Menu title, Text Domain(pour la traduction)
                 'manage_options',                                        // Capabilities (Capacités)
                 'planplan_rotation',                               // Slug du sous menu
-                [ &$this, 'load_planeplan_rotation']                 // Callback fonction (this pour dire que c'est dans cette classe
+                [ &$this, 'planeplan_rotation']                 // Callback fonction (this pour dire que c'est dans cette classe
             );
 
 
@@ -87,22 +87,35 @@ namespace planeplan{
              * Sous Menu Aerodrome
              */
             add_submenu_page(
-                'planplan_settings_page', // slug du Menu Parent
-                __( 'PlanePage Aerodrome Setting', 'planeplan/planplan' ),  // Titre de la page identique au menu parent
+                'planplan', // slug du Menu Parent
+                __( 'planeplane Aerodrome Setting', 'planeplan/planplan' ),  // Titre de la page identique au menu parent
                 __( 'Aerodromes', 'planeplan/planplan' ),                   // Menu title, Text Domain(pour la traduction)
                 'manage_options',                                           // Capabilities (Capacités)
-                'PlanePlane__menu_aerodrome',                               // Slug du sous menu
-                [ &$this, 'gestion_aerodrome']
+                'planeplan_aerodrome',                               // Slug du sous menu
+                 [ &$this, 'planeplan_aerodrome']
             // Priority/position
             );
 
+                add_submenu_page(
+                    'planeplan_aerodrome', // slug du Menu Parent
+                    __( 'PlanePage Aerodrome Setting', 'planeplan/planplan' ),  // Titre de la page identique au menu parent
+                    __( 'Aerodromes', 'planeplan/planplan' ),                   // Menu title, Text Domain(pour la traduction)
+                    'manage_options',                                           // Capabilities (Capacités)
+                    'planeplan_aerodrome_add',                               // Slug du sous menu
+                    [ &$this, 'planeplan_aerodrome_add']
+                // Priority/position
+                );
+
+
+
+
             add_submenu_page(
-                'planplan_settings_page', // slug du Menu Parent
+                'planplan', // slug du Menu Parent
                 __( 'PlanePage General Setting', 'planeplan/planplan' ),  // Titre de la page identique au menu parent
                 __( 'Parametres', 'planeplan/planplan' ),                   // Menu title, Text Domain(pour la traduction)
                 'manage_options',                                           // Capabilities (Capacités)
-                'PlanePlane__menu_parametres',                               // Slug sous menu
-                [ &$this, 'parametres']
+                'planeplan_parameters',                               // Slug sous menu
+                [ &$this, 'planeplan_parameters']
             // Priority/position
             );
 
@@ -111,7 +124,7 @@ namespace planeplan{
         /*
         Affichae de la page d'accueil du plugin
         */
-        public function load_planeplan_accueil()
+        public function planeplan_accueil()
         {
             /*
             echo '<h1>' . __( 'planeplan Plugin', 'planeplan/planplan' ) . '</h1>';
@@ -127,7 +140,7 @@ namespace planeplan{
 		/*
 		Affichae de la page de gestion des rotations
 		*/
-		public function load_planeplan_rotation()
+		public function planeplan_rotation()
 		{ 
 			/*
 			echo '<h1>' . __( 'planeplan Plugin', 'planeplan/planplan' ) . '</h1>';
@@ -143,7 +156,7 @@ namespace planeplan{
         /*
         Affichae de la page de gestion des aerodromes
         */
-        public function gestion_aerodrome()
+        public function planeplan_aerodrome()
         {
             /*
             echo '<h1>' . __( 'planeplan Plugin', 'planeplan/planplan' ) . '</h1>';
@@ -153,6 +166,50 @@ namespace planeplan{
             echo "<h1>Planeplan Plugin</h1>";
             echo '<h2>Gestion des Aerodromes</h2>';
 
+            aerodrome::listing();
+            self::credits();
+        }
+
+
+        /*
+        Affichae de la page de gestion des aerodromes
+        */
+        public function planeplan_aerodrome_add()
+        {
+            echo "<h1>Planeplan Plugin</h1>";
+            echo '<h2>Ajouter un Aerodrome</h2>';
+
+            /*
+             * Attention a bien definir l'attribut name des imput avec data[cle]
+             */
+            $data = isset($_POST['data']) ? $_POST['data'] : false;
+
+            if ($data) {
+                aerodrome::processForm($data);
+
+                echo '<div class="notice notice-success"><p>Nouvel aerodrome enregistré</p></div>';
+
+                //redirection via un lien
+                $url = esc_url( $_SERVER['REQUEST_URI']);
+
+                $resturl = substr("$url", 0, -4);
+
+                //$url=get_permalink(get_page_by_path('planeplan_aerodrome'));
+
+              //  var_dump($url);
+              //  var_dump($resturl);
+
+               //  echo "<a href=\"$resturl\ class= >retour</a>";
+                echo '<div class="wrap">';
+                echo '<h2><a class="add-new-h2" href="'.$resturl.'">Retour</a></h2>';
+                echo '</div>';
+
+              //  aerodrome::listing();
+
+            }
+            else {
+                aerodrome::showForm();
+            }
 
             self::credits();
         }
@@ -160,7 +217,7 @@ namespace planeplan{
         /*
         Gestion des parametres
         */
-        public function parametres()
+        public function planeplan_parameters()
         {
 
             echo "<h1>Planeplan Plugin Settings</h1>";
@@ -172,9 +229,9 @@ namespace planeplan{
               if ($data) {
                   param::processForm($data);
 
-                  param::showForm();
-
                   echo '<div class="notice notice-success"><p>Nouveaux paramètres bien pris en compte</p></div>';
+
+                  param::showForm();
 
               }
               else {
@@ -187,5 +244,4 @@ namespace planeplan{
             echo'<p id="footer-left" class="alignleft">developpé par Ludovic MERY  - version 1.0</p>';
         }
 	}
-}
 ?>

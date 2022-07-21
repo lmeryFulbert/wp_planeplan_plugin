@@ -1,5 +1,5 @@
 <?php
-namespace planeplan {
+namespace planeplan;
     class sauteur
     {
         private $_id;
@@ -14,7 +14,7 @@ namespace planeplan {
         public static function createtable($tablename, $charset)
         {
             $sql = "CREATE TABLE $tablename (
-				id         int not null,
+				id         int auto_increment not null,
 				nom         varchar(50)  not null,
 				prenom      varchar(50)  null,
 				taille      int null,
@@ -160,5 +160,4 @@ namespace planeplan {
             return $this->_poid / $this->_taille;
         }
     }
-}
 ?>

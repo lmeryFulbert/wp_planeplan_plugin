@@ -1,5 +1,5 @@
 <?php
-namespace planeplan {
+namespace planeplan;
     class rotation
     {
         private $day;
@@ -38,5 +38,4 @@ namespace planeplan {
             return $this->hour;
         }
     }
-}
 ?>
