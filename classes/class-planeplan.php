@@ -30,7 +30,7 @@ namespace planeplan;
 		Attention la methode doit être static
 		*/
 
-		static function on_activation() {
+		public static function on_activation() {
             require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 			// code d'activation du plugin ici appelé par register_activation_hook
 			global $wpdb;
@@ -96,18 +96,6 @@ namespace planeplan;
             // Priority/position
             );
 
-                add_submenu_page(
-                    'planeplan_aerodrome', // slug du Menu Parent
-                    __( 'PlanePage Aerodrome Setting', 'planeplan/planplan' ),  // Titre de la page identique au menu parent
-                    __( 'Aerodromes', 'planeplan/planplan' ),                   // Menu title, Text Domain(pour la traduction)
-                    'manage_options',                                           // Capabilities (Capacités)
-                    'planeplan_aerodrome_add',                               // Slug du sous menu
-                    [ &$this, 'planeplan_aerodrome_add']
-                // Priority/position
-                );
-
-
-
 
             add_submenu_page(
                 'planplan', // slug du Menu Parent
@@ -132,9 +120,9 @@ namespace planeplan;
             echo '<p>' . __( 'On dit Merci Qui ? .... merci Ludo !', 'planeplan/planplan' ) . '</p>';
             */
             echo "<h1>Planeplan Plugin</h1>";
-            echo '<h2>Welcome Mathieu Deshamps</h2>';
+            echo '<h2>Welcome Mathieu Deschamps</h2>';
 
-            self::credits();
+            $this->credits();
         }
 			
 		/*
@@ -150,7 +138,7 @@ namespace planeplan;
             echo "<h1>Planeplan Plugin</h1>";
             echo '<h2>Gestion des rotations de vols de ToursNJump</h2>';
 
-            self::credits();
+            $this->credits();
 		}
 
         /*
@@ -166,53 +154,13 @@ namespace planeplan;
             echo "<h1>Planeplan Plugin</h1>";
             echo '<h2>Gestion des Aerodromes</h2>';
 
-            aerodrome::listing();
-            self::credits();
+            $aerodrome_controller=new aerodrome();
+
+            $aerodrome_controller->showview();
+
+            $this->credits();
         }
 
-
-        /*
-        Affichae de la page de gestion des aerodromes
-        */
-        public function planeplan_aerodrome_add()
-        {
-            echo "<h1>Planeplan Plugin</h1>";
-            echo '<h2>Ajouter un Aerodrome</h2>';
-
-            /*
-             * Attention a bien definir l'attribut name des imput avec data[cle]
-             */
-            $data = isset($_POST['data']) ? $_POST['data'] : false;
-
-            if ($data) {
-                aerodrome::processForm($data);
-
-                echo '<div class="notice notice-success"><p>Nouvel aerodrome enregistré</p></div>';
-
-                //redirection via un lien
-                $url = esc_url( $_SERVER['REQUEST_URI']);
-
-                $resturl = substr("$url", 0, -4);
-
-                //$url=get_permalink(get_page_by_path('planeplan_aerodrome'));
-
-              //  var_dump($url);
-              //  var_dump($resturl);
-
-               //  echo "<a href=\"$resturl\ class= >retour</a>";
-                echo '<div class="wrap">';
-                echo '<h2><a class="add-new-h2" href="'.$resturl.'">Retour</a></h2>';
-                echo '</div>';
-
-              //  aerodrome::listing();
-
-            }
-            else {
-                aerodrome::showForm();
-            }
-
-            self::credits();
-        }
 
         /*
         Gestion des parametres
@@ -237,10 +185,10 @@ namespace planeplan;
               else {
                   param::showForm();
               }
-            self::credits();
+            $this->credits();
         }
 
-        public static function credits(){
+        public function credits(){
             echo'<p id="footer-left" class="alignleft">developpé par Ludovic MERY  - version 1.0</p>';
         }
 	}
